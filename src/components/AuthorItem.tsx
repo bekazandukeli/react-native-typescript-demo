@@ -6,33 +6,37 @@ type AuthorItemProps = {
   userName: string;
   userEmail: string;
   postNumber: number;
+  pressed: boolean;
 };
 
 export default function AuthorItem({
   userEmail,
   userName,
   postNumber,
+  pressed,
 }: AuthorItemProps) {
+  const userInitials =
+    userName.split(' ')[0][0].toUpperCase() +
+    userName.split(' ')[1][1].toUpperCase();
+
   return (
-    <View style={style.container}>
+    <View
+      style={[style.container, {backgroundColor: pressed ? '#eee' : '#fff'}]}>
       <View style={style.userInfoContainer}>
         <View style={style.iconBackground}>
-          <Text style={style.iconText}>JS</Text>
+          <Text style={style.iconText}>{userInitials}</Text>
         </View>
         <View style={style.userInfoWrapper}>
-          <Text style={style.userName}>{userName}</Text>
+          <Text style={style.userName}>
+            {userName.length > 22 ? userName.slice(0, 20) + '...' : userName}
+          </Text>
           <Text style={style.userEmail}>{userEmail}</Text>
         </View>
       </View>
-      <Pressable
-        style={({pressed}) => [
-          style.goToPostsWrapper,
-          {opacity: pressed ? 0.5 : 1},
-        ]}
-        onPress={() => Alert.alert('rame')}>
+      <View style={style.goToPostsWrapper}>
         <Text style={[style.goToPostsText]}>{postNumber} posts</Text>
         <Arrow style={style.goToPostsArrow} />
-      </Pressable>
+      </View>
     </View>
   );
 }

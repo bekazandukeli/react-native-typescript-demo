@@ -1,31 +1,93 @@
-import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  ActivityIndicator,
+  Button,
+  FlatList,
+  Platform,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import SearchIcon from '../assets/images/SearchIcon';
 import AuthorItem from '../components/AuthorItem';
 import SearchBar from '../components/SearchBar';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {fetchUsersAPI} from '../api';
+import {TouchableNativeFeedback} from 'react-native-gesture-handler';
 
-export default function AuthorsScreen() {
+interface PostsDataModel {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
+}
+
+export interface UserDataModel {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
+  address: {
+    street: string;
+    suite: string;
+    city: string;
+    zipcode: string;
+    geo: {
+      lat: string;
+      lng: string;
+    };
+  };
+  posts: Array<PostsDataModel>;
+}
+
+export default function AuthorsScreen({navigation}) {
+  const [usersData, setUsersData] = useState<Array<UserDataModel>>(null);
+  const width = useWindowDimensions().width;
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const data = await fetchUsersAPI();
+      setUsersData(data);
+    };
+    fetchUsers();
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <Icon name="md-menu" size={32} />
+    <SafeAreaView style={styles.container}>
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>Authors</Text>
+      </View>
       <SearchBar style={{marginBottom: 14}} />
-      <AuthorItem
-        postNumber={5}
-        userEmail="bekazandukeli@gmail.com"
-        userName="Beka Zandukeli"
-      />
-      <AuthorItem
-        postNumber={5}
-        userEmail="bekazandukeli@gmail.com"
-        userName="Beka Zandukeli"
-      />
-      <AuthorItem
-        postNumber={5}
-        userEmail="bekazandukeli@gmail.com"
-        userName="Beka Zandukeli"
-      />
-    </View>
+      {usersData ? (
+        <FlatList
+          data={usersData}
+          showsVerticalScrollIndicator={false}
+          keyExtractor={(user) => user.id.toString()}
+          renderItem={({item}) => (
+            <Pressable onPress={() => navigation.navigate('Posts', item)}>
+              {({pressed}) => (
+                <AuthorItem
+                  pressed={pressed}
+                  postNumber={item.posts.length}
+                  userEmail={item.email}
+                  userName={item.name}
+                />
+              )}
+            </Pressable>
+          )}
+        />
+      ) : (
+        <View style={{flex: 1, paddingTop: width * 0.3}}>
+          <ActivityIndicator
+            size="large"
+            color={Platform.OS === 'ios' ? 'gray' : '#159687'}
+          />
+        </View>
+      )}
+    </SafeAreaView>
   );
 }
 
@@ -33,5 +95,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: '400',
+    fontFamily: 'Roboto-Regular',
+    lineHeight: 24,
+  },
+  titleContainer: {
+    height: 40,
+    width: 280,
+    marginLeft: 16,
+    justifyContent: 'center',
+    marginVertical: 12,
   },
 });
