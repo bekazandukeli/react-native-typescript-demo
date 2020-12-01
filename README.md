@@ -14,4 +14,5 @@ https://www.figma.com/file/dO5c5E0uC3K56OKDnTMXdc/Test-App?node-id=0%3A1
 Use these API endpoints to get the required data.
 
 https://jsonplaceholder.typicode.com/users
+
 https://jsonplaceholder.typicode.com/posts
