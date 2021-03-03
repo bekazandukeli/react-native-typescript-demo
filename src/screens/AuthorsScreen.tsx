@@ -67,15 +67,24 @@ export default function AuthorsScreen({navigation}) {
           showsVerticalScrollIndicator={false}
           keyExtractor={(user) => user.id.toString()}
           renderItem={({item}) => (
-            <Pressable onPress={() => navigation.navigate('Posts', item)}>
-              {({pressed}) => (
-                <AuthorItem
-                  pressed={pressed}
-                  postNumber={item.posts.length}
-                  userEmail={item.email}
-                  userName={item.name}
-                />
-              )}
+            <Pressable
+              style={({pressed}) => {
+                if (Platform.OS === 'ios') {
+                  return [{backgroundColor: pressed ? '#eee' : '#fff'}];
+                }
+              }}
+              onPress={() => navigation.navigate('Posts', item)}
+              android_ripple={{
+                borderless: false,
+                color: 'grey',
+                radius: width,
+              }}>
+              <AuthorItem
+                pressed={Platform.OS === 'ios' ? true : null}
+                postNumber={item.posts.length}
+                userEmail={item.email}
+                userName={item.name}
+              />
             </Pressable>
           )}
         />

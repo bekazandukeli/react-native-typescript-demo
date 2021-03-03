@@ -6,7 +6,7 @@ type AuthorItemProps = {
   userName: string;
   userEmail: string;
   postNumber: number;
-  pressed: boolean;
+  pressed?: boolean;
 };
 
 export default function AuthorItem({
@@ -20,8 +20,7 @@ export default function AuthorItem({
     userName.split(' ')[1][1].toUpperCase();
 
   return (
-    <View
-      style={[style.container, {backgroundColor: pressed ? '#eee' : '#fff'}]}>
+    <View style={[style.container]}>
       <View style={style.userInfoContainer}>
         <View style={style.iconBackground}>
           <Text style={style.iconText}>{userInitials}</Text>
